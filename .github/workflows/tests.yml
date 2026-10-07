@@ -3,7 +3,7 @@ name: tests
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 permissions:
@@ -40,7 +40,7 @@ jobs:
   deploy:
     needs: ci
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:
       - name: Checkout code
