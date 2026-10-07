@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Integrasi Keuangan</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #eeede8;
+    --border: #dddbd3;
+    --fg: #1d1c18;
+    --fg-muted: #68655d;
+    --fg-faint: #928e83;
+    --accent: #2c4a86;
+    --accent-fg: #ffffff;
+    --accent-soft: #e6ebf5;
+    --accent-soft-border: #c7d3e8;
+    --code-bg: #14171f;
+    --code-fg: #e7e9ee;
+    --code-muted: #8891a3;
+    --code-key: #7fb7e0;
+    --code-string: #b7d99a;
+    --warn: #a3621f;
+    --warn-soft: #f7ead9;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15161a;
+      --surface: #1c1e24;
+      --surface-2: #24262d;
+      --border: #32343c;
+      --fg: #eceef1;
+      --fg-muted: #a3a7b1;
+      --fg-faint: #767b87;
+      --accent: #7fa6e8;
+      --accent-fg: #11182b;
+      --accent-soft: #212c42;
+      --accent-soft-border: #334673;
+      --code-bg: #0e1015;
+      --code-fg: #e7e9ee;
+      --code-muted: #8891a3;
+      --code-key: #7fb7e0;
+      --code-string: #b7d99a;
+      --warn: #e3a362;
+      --warn-soft: #3a2c18;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15161a;
+    --surface: #1c1e24;
+    --surface-2: #24262d;
+    --border: #32343c;
+    --fg: #eceef1;
+    --fg-muted: #a3a7b1;
+    --fg-faint: #767b87;
+    --accent: #7fa6e8;
+    --accent-fg: #11182b;
+    --accent-soft: #212c42;
+    --accent-soft-border: #334673;
+    --code-bg: #0e1015;
+    --code-fg: #e7e9ee;
+    --code-muted: #8891a3;
+    --code-key: #7fb7e0;
+    --code-string: #b7d99a;
+    --warn: #e3a362;
+    --warn-soft: #3a2c18;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  code, pre, .mono, .path, .badge-method {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.25; text-wrap: balance; }
+  a { color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 252px minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px clamp(16px, 4vw, 32px);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar .mark {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--accent); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex: none;
+  }
+  .topbar .name { font-weight: 600; font-size: 15px; }
+  .topbar .sub { color: var(--fg-muted); font-size: 12.5px; }
+  .topbar .ver {
+    margin-left: auto;
+    font-size: 12px; color: var(--fg-muted);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .nav-toggle-label {
+    display: none;
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid var(--border);
+    align-items: center; justify-content: center;
+    cursor: pointer; flex: none;
+  }
+  .nav-toggle-label span, .nav-toggle-label span::before, .nav-toggle-label span::after {
+    content: ""; display: block; width: 14px; height: 2px; background: var(--fg); border-radius: 2px;
+  }
+  .nav-toggle-label span { position: relative; }
+  .nav-toggle-label span::before { position: absolute; top: -4px; }
+  .nav-toggle-label span::after { position: absolute; top: 4px; }
+  #nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+
+  nav.side {
+    position: sticky;
+    top: 57px;
+    align-self: start;
+    height: calc(100vh - 57px);
+    overflow-y: auto;
+    padding: 20px 14px 40px;
+    border-right: 1px solid var(--border);
+  }
+  nav.side .grp { margin-bottom: 18px; }
+  nav.side .grp-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--fg-faint);
+    padding: 0 10px; margin-bottom: 6px;
+  }
+  nav.side a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 7px;
+    color: var(--fg-muted); text-decoration: none; font-size: 13.5px;
+  }
+  nav.side a:hover { background: var(--surface-2); color: var(--fg); }
+  nav.side a .m {
+    font-size: 9.5px; font-weight: 700; color: var(--accent);
+    border: 1px solid var(--accent-soft-border); background: var(--accent-soft);
+    border-radius: 4px; padding: 1px 5px; flex: none;
+  }
+
+  main {
+    min-width: 0;
+    padding: 36px clamp(16px, 4vw, 48px) 100px;
+  }
+  .lede {
+    max-width: 62ch;
+    color: var(--fg-muted);
+    font-size: 16px;
+    margin: 10px 0 28px;
+  }
+  section.intro h1 { font-size: 28px; margin: 0 0 4px; }
+
+  section.doc-section { padding-top: 44px; border-top: 1px solid var(--border); margin-top: 44px; scroll-margin-top: 70px; }
+  section.doc-section:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+  h2 { font-size: 21px; scroll-margin-top: 70px; }
+  h2 .ability {
+    display: inline-block; margin-left: 10px; vertical-align: middle;
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 500;
+    color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-soft-border);
+    border-radius: 6px; padding: 2px 8px;
+  }
+  .used-by { color: var(--fg-muted); font-size: 14px; margin: 6px 0 18px; }
+  .used-by b { color: var(--fg); font-weight: 600; }
+
+  .route {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+    padding: 11px 14px; margin: 16px 0 22px; overflow-x: auto;
+  }
+  .badge-method {
+    flex: none; font-size: 12px; font-weight: 700;
+    background: var(--accent); color: var(--accent-fg);
+    border-radius: 6px; padding: 3px 9px; letter-spacing: 0.02em;
+  }
+  .route .path { font-size: 14px; white-space: nowrap; }
+
+  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-muted); margin: 26px 0 10px; }
+
+  table.params {
+    font-size: 13.5px; border: 1px solid var(--border); border-radius: 9px; overflow: hidden;
+  }
+  table.params th, table.params td {
+    text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.params th { background: var(--surface-2); font-weight: 600; font-size: 12px; color: var(--fg-muted); }
+  table.params tr:last-child td { border-bottom: none; }
+  table.params td.param { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; white-space: nowrap; }
+  table.params td.type { color: var(--fg-muted); white-space: nowrap; }
+
+  .codeblock {
+    position: relative; background: var(--code-bg); color: var(--code-fg);
+    border-radius: 9px; margin: 10px 0 20px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .codeblock .label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 12px; font-size: 11px; color: var(--code-muted);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .codeblock pre {
+    margin: 0; padding: 14px; overflow-x: auto; font-size: 12.8px; line-height: 1.55;
+  }
+  .copy-btn {
+    font-family: "IBM Plex Sans", sans-serif;
+    background: transparent; border: 1px solid rgba(255,255,255,0.18); color: var(--code-muted);
+    border-radius: 5px; padding: 2px 8px; font-size: 11px; cursor: pointer;
+  }
+  .copy-btn:hover { color: var(--code-fg); border-color: rgba(255,255,255,0.35); }
+  .copy-btn.copied { color: #8fd19e; border-color: #8fd19e; }
+  .tok-key { color: var(--code-key); }
+  .tok-str { color: var(--code-string); }
+  .tok-muted { color: var(--code-muted); }
+
+  .errors { font-size: 13.5px; margin: 0 0 8px; padding-left: 0; list-style: none; }
+  .errors li { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .errors li:last-child { border-bottom: none; }
+  .errors code.status { flex: none; font-size: 12px; font-weight: 600; color: var(--warn); background: var(--warn-soft); border-radius: 5px; padding: 1px 7px; }
+
+  .steps { margin: 0; padding-left: 20px; }
+  .steps li { margin-bottom: 10px; color: var(--fg-muted); }
+  .steps li b { color: var(--fg); font-weight: 600; }
+
+  table.overview { font-size: 13.5px; margin: 18px 0 8px; }
+  table.overview th, table.overview td {
+    text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border);
+  }
+  table.overview th { color: var(--fg-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+  table.overview td.ep { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; }
+  table.overview td.ab code { background: var(--accent-soft); color: var(--accent); border-radius: 5px; padding: 1px 6px; font-size: 11.5px; }
+  table.overview a { text-decoration: none; }
+
+  .note {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px;
+    padding: 14px 16px; font-size: 13.5px; color: var(--fg-muted); margin: 18px 0;
+  }
+  .note b { color: var(--fg); }
+
+  .scope-out { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 16px 0; }
+  .scope-out .card {
+    border: 1px solid var(--border); border-radius: 9px; padding: 14px 16px; background: var(--surface);
+  }
+  .scope-out .card h4 { margin: 0 0 6px; font-size: 13.5px; }
+  .scope-out .card p { margin: 0; font-size: 13px; color: var(--fg-muted); }
+
+  footer { color: var(--fg-faint); font-size: 12.5px; padding: 30px clamp(16px, 4vw, 48px) 50px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .nav-toggle-label { display: flex; }
+    nav.side {
+      position: fixed; top: 57px; left: 0; bottom: 0; width: 260px;
+      background: var(--surface); z-index: 30;
+      transform: translateX(-100%); transition: transform 0.18s ease;
+      box-shadow: 1px 0 0 var(--border);
+    }
+    #nav-toggle:checked ~ .shell nav.side { transform: translateX(0); }
+    .scope-out { grid-template-columns: 1fr; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<input type="checkbox" id="nav-toggle" hidden>
+
+<div class="topbar">
+  <label class="nav-toggle-label" for="nav-toggle" aria-label="Buka navigasi"><span></span></label>
+  <div class="mark">KY</div>
+  <div>
+    <div class="name">API Integrasi Keuangan</div>
+    <div class="sub">Sistem Keuangan Yayasan Pendidikan</div>
+  </div>
+  <div class="ver">v1 &middot; baca-saja</div>
+</div>
+
+<div class="shell">
+  <nav class="side">
+    <div class="grp">
+      <div class="grp-label">Mulai di sini</div>
+      <a href="#ringkasan">Ringkasan</a>
+      <a href="#akses">Klien &amp; ability</a>
+      <a href="#pola-umum">Pola umum</a>
+    </div>
+    <div class="grp">
+      <div class="grp-label">Endpoint</div>
+      <a href="#pembayaran-spp"><span class="m">GET</span> Pembayaran SPP</a>
+      <a href="#tagihan-siswa"><span class="m">GET</span> Tagihan Siswa</a>
+      <a href="#hutang-vendor"><span class="m">GET</span> Hutang Vendor</a>
+      <a href="#penggajian"><span class="m">GET</span> Penggajian</a>
+      <a href="#laporan-ringkasan"><span class="m">GET</span> Ringkasan Laporan</a>
+    </div>
+    <div class="grp">
+      <div class="grp-label">Lainnya</div>
+      <a href="#scope">Di luar scope</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="intro" id="ringkasan">
+      <h1>API Integrasi Keuangan</h1>
+      <p class="lede">
+        Modul <b>Finance &amp; Accounting</b> dalam Sistem Informasi Terintegrasi Yayasan menyediakan
+        lima endpoint baca-saja di bawah <code>/api/v1/*</code> untuk paket lain — Parent App,
+        PPDB/Admission, Boarding Management, Teacher/Employee App, Procurement, dan
+        Data Integration &amp; Analytics / Executive Dashboard — menarik data yang sudah dicatat
+        bendahara. Sistem ini tidak menerima data masuk lewat API ini.
+      </p>
+
+      <table class="overview">
+        <tr><th>Endpoint</th><th>Ability</th><th>Dipakai oleh (contoh)</th></tr>
+        <tr>
+          <td class="ep">GET /pembayaran-spp</td>
+          <td class="ab"><code>read:pembayaran-spp</code></td>
+          <td><a href="#pembayaran-spp">Parent App — riwayat bayar SPP</a></td>
+        </tr>
+        <tr>
+          <td class="ep">GET /tagihan-siswa</td>
+          <td class="ab"><code>read:tagihan-siswa</code></td>
+          <td><a href="#tagihan-siswa">Parent App, PPDB (uang pangkal), Boarding (boarding fee)</a></td>
+        </tr>
+        <tr>
+          <td class="ep">GET /hutang-vendor</td>
+          <td class="ab"><code>read:hutang-vendor</code></td>
+          <td><a href="#hutang-vendor">Procurement — status pembayaran invoice vendor</a></td>
+        </tr>
+        <tr>
+          <td class="ep">GET /penggajian</td>
+          <td class="ab"><code>read:penggajian</code></td>
+          <td><a href="#penggajian">Teacher/Employee App — slip gaji</a></td>
+        </tr>
+        <tr>
+          <td class="ep">GET /laporan/ringkasan</td>
+          <td class="ab"><code>read:laporan-ringkasan</code></td>
+          <td><a href="#laporan-ringkasan">Data Integration &amp; Analytics, Executive Dashboard</a></td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="akses">
+      <h2>Klien &amp; ability</h2>
+      <p class="used-by">
+        Sistem eksternal tidak login sebagai pengguna manusia. Setiap sistem didaftarkan sebagai satu
+        <b>Klien API</b> oleh admin di <b>Keuangan &gt; Klien API</b>.
+      </p>
+      <ol class="steps">
+        <li><b>Daftarkan klien.</b> Admin memberi nama (mis. &ldquo;PPDB&rdquo; atau &ldquo;Parent App&rdquo;) dan mencentang ability mana saja yang boleh diakses klien itu — hanya yang dibutuhkan, tidak semua.</li>
+        <li><b>Simpan tokennya.</b> Token Sanctum terbit terkunci ke ability yang dicentang, dan ditampilkan satu kali saja — salin segera, token tidak bisa dilihat ulang.</li>
+        <li><b>Ubah ability bila perlu.</b> Mengubah ability klien tidak otomatis mengubah token yang sudah beredar (ability terkunci saat token dibuat) — klik &ldquo;Terbitkan Ulang&rdquo; agar token baru memakai ability terbaru; token lama langsung tidak berlaku.</li>
+        <li><b>Nonaktifkan kapan saja.</b> Menonaktifkan klien menolak semua request-nya (403) tanpa perlu mencabut tokennya.</li>
+      </ol>
+      <div class="note">
+        Setiap endpoint mengecek ability token-nya sendiri selain dicek middleware (token valid + klien aktif) — token dengan ability yang salah ditolak walau valid dan klien-nya aktif.
+      </div>
+    </section>
+
+    <section class="doc-section" id="pola-umum">
+      <h2>Pola umum tiap endpoint</h2>
+      <table class="params">
+        <tr><th>Hal</th><th>Ketentuan</th></tr>
+        <tr><td class="param">Autentikasi</td><td>Header <code>Authorization: Bearer &lt;token&gt;</code></td></tr>
+        <tr><td class="param">Format</td><td>JSON, dipaginasi (<code>data</code>, <code>links</code>, <code>meta</code>), parameter <code>per_page</code> 1&ndash;100 (default 25) kecuali disebutkan lain</td></tr>
+        <tr><td class="param">Rate limit</td><td>60 request/menit per klien</td></tr>
+      </table>
+      <h3>Error umum</h3>
+      <ul class="errors">
+        <li><code class="status">401</code> Token tidak ada atau tidak valid.</li>
+        <li><code class="status">403</code> Token tidak punya ability yang sesuai, atau klien dinonaktifkan.</li>
+        <li><code class="status">422</code> Parameter query tidak valid.</li>
+      </ul>
+    </section>
+
+    <!-- ========== Pembayaran SPP ========== -->
+    <section class="doc-section" id="pembayaran-spp">
+      <h2>Pembayaran SPP <span class="ability">read:pembayaran-spp</span></h2>
+      <p class="used-by">Riwayat pembayaran SPP yang sudah tercatat. Dipakai oleh <b>Parent App</b> untuk menampilkan riwayat bayar ke orang tua.</p>
+      <div class="route"><span class="badge-method">GET</span><span class="path">/api/v1/pembayaran-spp</span></div>
+
+      <h3>Parameter query (semua opsional)</h3>
+      <table class="params">
+        <tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr>
+        <tr><td class="param">kode_unit</td><td class="type">string</td><td>Filter berdasarkan kode unit sekolah</td></tr>
+        <tr><td class="param">kode_siswa</td><td class="type">string</td><td>Filter berdasarkan kode siswa</td></tr>
+        <tr><td class="param">periode</td><td class="type">string</td><td>Filter berdasarkan periode tagihan</td></tr>
+        <tr><td class="param">tanggal_dari</td><td class="type">date</td><td>Tanggal pembayaran mulai (<code>Y-m-d</code>)</td></tr>
+        <tr><td class="param">tanggal_sampai</td><td class="type">date</td><td>Tanggal pembayaran sampai (<code>Y-m-d</code>)</td></tr>
+        <tr><td class="param">per_page</td><td class="type">integer</td><td>1&ndash;100, default 25</td></tr>
+      </table>
+
+      <h3>Contoh request</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>bash</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>curl -H "Authorization: Bearer &lt;token&gt;" \
+  "https://finance.yayasan.test/api/v1/pembayaran-spp?kode_unit=U1&amp;periode=2026-10"</code></pre>
+      </div>
+
+      <h3>Contoh response</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>json</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>{
+  <span class="tok-key">"data"</span>: [
+    {
+      <span class="tok-key">"id"</span>: 42,
+      <span class="tok-key">"unit"</span>: { <span class="tok-key">"kode_unit"</span>: <span class="tok-str">"U1"</span>, <span class="tok-key">"nama"</span>: <span class="tok-str">"Unit Satu"</span> },
+      <span class="tok-key">"siswa"</span>: { <span class="tok-key">"kode_siswa"</span>: <span class="tok-str">"S-0001"</span>, <span class="tok-key">"nama_siswa"</span>: <span class="tok-str">"Ahmad Fajar"</span> },
+      <span class="tok-key">"jenis_tagihan"</span>: <span class="tok-str">"spp"</span>,
+      <span class="tok-key">"periode_tagihan"</span>: <span class="tok-str">"2026-10"</span>,
+      <span class="tok-key">"nominal_dibayar"</span>: 200000,
+      <span class="tok-key">"tanggal_bayar"</span>: <span class="tok-str">"2026-10-05"</span>,
+      <span class="tok-key">"metode_pembayaran"</span>: <span class="tok-str">"Transfer Bank"</span>,
+      <span class="tok-key">"status_tagihan"</span>: <span class="tok-str">"sebagian"</span>,
+      <span class="tok-key">"sisa_tagihan"</span>: 300000,
+      <span class="tok-key">"keterangan"</span>: <span class="tok-str">"Pembayaran spp - Ahmad Fajar (S-0001)"</span>
+    }
+  ],
+  <span class="tok-key">"links"</span>: { <span class="tok-muted">"..."</span> },
+  <span class="tok-key">"meta"</span>: { <span class="tok-key">"current_page"</span>: 1, <span class="tok-key">"last_page"</span>: 3, <span class="tok-key">"per_page"</span>: 25, <span class="tok-key">"total"</span>: 67 }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ========== Tagihan Siswa ========== -->
+    <section class="doc-section" id="tagihan-siswa">
+      <h2>Tagihan Siswa <span class="ability">read:tagihan-siswa</span></h2>
+      <p class="used-by">Status tagihan siswa untuk semua jenis — bukan cuma SPP, juga uang pangkal, boarding fee, dan tagihan kegiatan. Dipakai oleh <b>Parent App</b> (cek tagihan anak), <b>PPDB/Admission</b> (verifikasi uang pangkal sebelum daftar ulang), dan <b>Boarding Management</b> (status boarding fee).</p>
+      <div class="route"><span class="badge-method">GET</span><span class="path">/api/v1/tagihan-siswa</span></div>
+
+      <h3>Parameter query (semua opsional)</h3>
+      <table class="params">
+        <tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr>
+        <tr><td class="param">kode_unit</td><td class="type">string</td><td>Filter berdasarkan kode unit sekolah</td></tr>
+        <tr><td class="param">kode_siswa</td><td class="type">string</td><td>Filter berdasarkan kode siswa</td></tr>
+        <tr><td class="param">jenis_tagihan</td><td class="type">string</td><td><code>spp</code>, <code>uang_pangkal</code>, <code>boarding_fee</code>, <code>kegiatan</code>, dst.</td></tr>
+        <tr><td class="param">periode</td><td class="type">string</td><td>Filter berdasarkan periode tagihan</td></tr>
+        <tr><td class="param">status</td><td class="type">string</td><td><code>belum_bayar</code>, <code>sebagian</code>, atau <code>lunas</code></td></tr>
+        <tr><td class="param">per_page</td><td class="type">integer</td><td>1&ndash;100, default 25</td></tr>
+      </table>
+
+      <h3>Contoh request</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>bash</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>curl -H "Authorization: Bearer &lt;token&gt;" \
+  "https://finance.yayasan.test/api/v1/tagihan-siswa?kode_siswa=S-0001&amp;jenis_tagihan=uang_pangkal"</code></pre>
+      </div>
+
+      <h3>Contoh response</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>json</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>{
+  <span class="tok-key">"data"</span>: [
+    {
+      <span class="tok-key">"id"</span>: 10,
+      <span class="tok-key">"unit"</span>: { <span class="tok-key">"kode_unit"</span>: <span class="tok-str">"U1"</span>, <span class="tok-key">"nama"</span>: <span class="tok-str">"Unit Satu"</span> },
+      <span class="tok-key">"kode_siswa"</span>: <span class="tok-str">"S-0001"</span>,
+      <span class="tok-key">"nama_siswa"</span>: <span class="tok-str">"Ahmad Fajar"</span>,
+      <span class="tok-key">"jenis_tagihan"</span>: <span class="tok-str">"uang_pangkal"</span>,
+      <span class="tok-key">"periode"</span>: <span class="tok-str">"2026-07"</span>,
+      <span class="tok-key">"nominal"</span>: 3000000,
+      <span class="tok-key">"sisa_tagihan"</span>: 3000000,
+      <span class="tok-key">"status"</span>: <span class="tok-str">"belum_bayar"</span>,
+      <span class="tok-key">"jatuh_tempo"</span>: <span class="tok-str">"2026-07-31"</span>
+    }
+  ],
+  <span class="tok-key">"links"</span>: { <span class="tok-muted">"..."</span> },
+  <span class="tok-key">"meta"</span>: { <span class="tok-key">"current_page"</span>: 1, <span class="tok-key">"last_page"</span>: 1, <span class="tok-key">"per_page"</span>: 25, <span class="tok-key">"total"</span>: 1 }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ========== Hutang Vendor ========== -->
+    <section class="doc-section" id="hutang-vendor">
+      <h2>Hutang Vendor <span class="ability">read:hutang-vendor</span></h2>
+      <p class="used-by">Status pembayaran invoice vendor. Dipakai oleh modul <b>Procurement</b> — setelah Purchase Order diterima dan dicatat sebagai hutang di sini, Procurement perlu tahu kapan invoice vendornya sudah dibayar.</p>
+      <div class="route"><span class="badge-method">GET</span><span class="path">/api/v1/hutang-vendor</span></div>
+
+      <h3>Parameter query (semua opsional)</h3>
+      <table class="params">
+        <tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr>
+        <tr><td class="param">kode_unit</td><td class="type">string</td><td>Filter berdasarkan kode unit sekolah</td></tr>
+        <tr><td class="param">nomor_invoice</td><td class="type">string</td><td>Filter berdasarkan nomor invoice</td></tr>
+        <tr><td class="param">status</td><td class="type">string</td><td><code>belum_lunas</code> atau <code>lunas</code></td></tr>
+        <tr><td class="param">per_page</td><td class="type">integer</td><td>1&ndash;100, default 25</td></tr>
+      </table>
+
+      <h3>Contoh request</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>bash</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>curl -H "Authorization: Bearer &lt;token&gt;" \
+  "https://finance.yayasan.test/api/v1/hutang-vendor?status=belum_lunas"</code></pre>
+      </div>
+
+      <h3>Contoh response</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>json</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>{
+  <span class="tok-key">"data"</span>: [
+    {
+      <span class="tok-key">"id"</span>: 7,
+      <span class="tok-key">"unit"</span>: { <span class="tok-key">"kode_unit"</span>: <span class="tok-str">"U1"</span>, <span class="tok-key">"nama"</span>: <span class="tok-str">"Unit Satu"</span> },
+      <span class="tok-key">"vendor"</span>: { <span class="tok-key">"nama"</span>: <span class="tok-str">"CV Sumber Makmur"</span> },
+      <span class="tok-key">"nomor_invoice"</span>: <span class="tok-str">"INV-001"</span>,
+      <span class="tok-key">"deskripsi"</span>: <span class="tok-str">"Pembelian ATK"</span>,
+      <span class="tok-key">"nominal"</span>: 1500000,
+      <span class="tok-key">"status"</span>: <span class="tok-str">"belum_lunas"</span>,
+      <span class="tok-key">"jatuh_tempo"</span>: <span class="tok-str">"2026-10-31"</span>,
+      <span class="tok-key">"tanggal_lunas"</span>: null
+    }
+  ],
+  <span class="tok-key">"links"</span>: { <span class="tok-muted">"..."</span> },
+  <span class="tok-key">"meta"</span>: { <span class="tok-key">"current_page"</span>: 1, <span class="tok-key">"last_page"</span>: 1, <span class="tok-key">"per_page"</span>: 25, <span class="tok-key">"total"</span>: 1 }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ========== Penggajian ========== -->
+    <section class="doc-section" id="penggajian">
+      <h2>Penggajian <span class="ability">read:penggajian</span></h2>
+      <p class="used-by">Status penggajian guru/pegawai. Dipakai oleh <b>Teacher/Employee App</b> untuk menampilkan slip gaji dan status pembayarannya.</p>
+      <div class="note"><b>Data sensitif.</b> Berikan ability ini hanya ke sistem yang benar-benar perlu menampilkannya, dan pastikan sistem pemanggil memfilter <code>kode_pegawai</code> sesuai pegawai yang login di sisi mereka — endpoint ini sendiri tidak membatasi per-pegawai.</div>
+      <div class="route"><span class="badge-method">GET</span><span class="path">/api/v1/penggajian</span></div>
+
+      <h3>Parameter query (semua opsional)</h3>
+      <table class="params">
+        <tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr>
+        <tr><td class="param">kode_unit</td><td class="type">string</td><td>Filter berdasarkan kode unit sekolah</td></tr>
+        <tr><td class="param">kode_pegawai</td><td class="type">string</td><td>Filter berdasarkan kode pegawai</td></tr>
+        <tr><td class="param">periode</td><td class="type">string</td><td>Filter berdasarkan periode gaji</td></tr>
+        <tr><td class="param">status</td><td class="type">string</td><td><code>draft</code> atau <code>dibayar</code></td></tr>
+        <tr><td class="param">per_page</td><td class="type">integer</td><td>1&ndash;100, default 25</td></tr>
+      </table>
+
+      <h3>Contoh request</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>bash</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>curl -H "Authorization: Bearer &lt;token&gt;" \
+  "https://finance.yayasan.test/api/v1/penggajian?kode_pegawai=P-001&amp;periode=2026-10"</code></pre>
+      </div>
+
+      <h3>Contoh response</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>json</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>{
+  <span class="tok-key">"data"</span>: [
+    {
+      <span class="tok-key">"id"</span>: 3,
+      <span class="tok-key">"unit"</span>: { <span class="tok-key">"kode_unit"</span>: <span class="tok-str">"U1"</span>, <span class="tok-key">"nama"</span>: <span class="tok-str">"Unit Satu"</span> },
+      <span class="tok-key">"kode_pegawai"</span>: <span class="tok-str">"P-001"</span>,
+      <span class="tok-key">"nama_pegawai"</span>: <span class="tok-str">"Budi"</span>,
+      <span class="tok-key">"periode"</span>: <span class="tok-str">"2026-10"</span>,
+      <span class="tok-key">"gaji_pokok"</span>: 5000000,
+      <span class="tok-key">"tunjangan"</span>: 500000,
+      <span class="tok-key">"potongan"</span>: 100000,
+      <span class="tok-key">"total_gaji"</span>: 5400000,
+      <span class="tok-key">"status"</span>: <span class="tok-str">"dibayar"</span>,
+      <span class="tok-key">"tanggal_bayar"</span>: <span class="tok-str">"2026-10-28"</span>
+    }
+  ],
+  <span class="tok-key">"links"</span>: { <span class="tok-muted">"..."</span> },
+  <span class="tok-key">"meta"</span>: { <span class="tok-key">"current_page"</span>: 1, <span class="tok-key">"last_page"</span>: 1, <span class="tok-key">"per_page"</span>: 25, <span class="tok-key">"total"</span>: 1 }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ========== Laporan Ringkasan ========== -->
+    <section class="doc-section" id="laporan-ringkasan">
+      <h2>Ringkasan Laporan <span class="ability">read:laporan-ringkasan</span></h2>
+      <p class="used-by">Ringkasan pemasukan, pengeluaran, dan saldo kas/bank per unit untuk satu periode. Dipakai oleh modul <b>Data Integration &amp; Analytics</b> dan <b>Executive Dashboard</b> tingkat yayasan untuk KPI &ldquo;Keuangan&rdquo;.</p>
+      <div class="route"><span class="badge-method">GET</span><span class="path">/api/v1/laporan/ringkasan</span></div>
+      <p class="used-by">Tidak dipaginasi — jumlah unit yayasan kecil, seluruh unit dikembalikan sekaligus.</p>
+
+      <h3>Parameter query (semua opsional)</h3>
+      <table class="params">
+        <tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr>
+        <tr><td class="param">dari</td><td class="type">date</td><td>Awal periode (<code>Y-m-d</code>). Default: awal tahun berjalan.</td></tr>
+        <tr><td class="param">sampai</td><td class="type">date</td><td>Akhir periode (<code>Y-m-d</code>). Default: hari ini.</td></tr>
+      </table>
+
+      <h3>Contoh request</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>bash</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>curl -H "Authorization: Bearer &lt;token&gt;" \
+  "https://finance.yayasan.test/api/v1/laporan/ringkasan?dari=2026-01-01&amp;sampai=2026-12-31"</code></pre>
+      </div>
+
+      <h3>Contoh response</h3>
+      <div class="codeblock" data-copy>
+        <div class="label"><span>json</span><button class="copy-btn" type="button">Salin</button></div>
+        <pre><code>{
+  <span class="tok-key">"data"</span>: [
+    {
+      <span class="tok-key">"unit_id"</span>: 1,
+      <span class="tok-key">"kode_unit"</span>: <span class="tok-str">"U1"</span>,
+      <span class="tok-key">"unit"</span>: <span class="tok-str">"Unit Satu"</span>,
+      <span class="tok-key">"pemasukan"</span>: 500000000,
+      <span class="tok-key">"pengeluaran"</span>: 420000000,
+      <span class="tok-key">"saldo_bersih"</span>: 80000000,
+      <span class="tok-key">"saldo_kas_bank"</span>: 95000000
+    }
+  ],
+  <span class="tok-key">"meta"</span>: {
+    <span class="tok-key">"total_pemasukan"</span>: 500000000,
+    <span class="tok-key">"total_pengeluaran"</span>: 420000000,
+    <span class="tok-key">"total_saldo_kas_bank"</span>: 95000000,
+    <span class="tok-key">"periode"</span>: { <span class="tok-key">"dari"</span>: <span class="tok-str">"2026-01-01"</span>, <span class="tok-key">"sampai"</span>: <span class="tok-str">"2026-12-31"</span> }
+  }
+}</code></pre>
+      </div>
+    </section>
+
+    <section class="doc-section" id="scope">
+      <h2>Di luar scope</h2>
+      <p class="used-by">Ini murni jalur baca. Sistem ini tidak menerima data masuk lewat API — integrasi payment gateway pihak ketiga hanya opsi konfigurasi, bukan kewajiban.</p>
+      <div class="scope-out">
+        <div class="card">
+          <h4>Tidak ada jalur tulis</h4>
+          <p>Tidak ada endpoint untuk sistem lain membuat tagihan, menandai pembayaran, atau memproses uang lewat API ini.</p>
+        </div>
+        <div class="card">
+          <h4>Belum ada endpoint create</h4>
+          <p>Kalau PPDB/Boarding perlu <b>membuat</b> tagihan uang pangkal atau boarding fee lewat API (bukan cuma baca status), itu endpoint tambahan yang belum dibangun dan perlu keputusan terpisah.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>API Integrasi Keuangan &middot; Sistem Keuangan Yayasan Pendidikan &middot; v1</footer>
+
+<script>
+  document.querySelectorAll('.codeblock .copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = btn.closest('.codeblock').querySelector('pre');
+      var text = pre.innerText;
+      function done() {
+        btn.textContent = 'Disalin';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 1400);
+      }
+      try {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(pre); done(); });
+      } catch (e) { fallbackCopy(pre); done(); }
+    });
+  });
+  function fallbackCopy(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.querySelectorAll('nav.side a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var t = document.getElementById('nav-toggle');
+      if (t) t.checked = false;
+    });
+  });
+</script>
+
+</body>
+</html>

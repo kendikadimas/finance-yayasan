@@ -1,0 +1,5988 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Docs - Master Data Management Yayasan",
+    "version": "1.0.0",
+    "description": "Dokumentasi RESTful API Layanan Master Data Management (MDM) - Yayasan Pendidikan Putra Harapan. Menyediakan endpoint untuk 10 entitas data master: Satuan Unit, Siswa, Orang Tua, Karyawan, Tahun Ajaran, Rombel Kelas, Bangunan, Ruangan, Mata Pelajaran, dan Vendor."
+  },
+  "servers": [
+    {
+      "url": "https://gevano.my.id/api"
+    }
+  ],
+  "security": [
+    {
+      "http": []
+    }
+  ],
+  "paths": {
+    "/v1/kelas/{kelas}/siswa": {
+      "get": {
+        "operationId": "v1.kelas.siswa.index",
+        "tags": [
+          "AnggotaKelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `AnggotaKelasResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/AnggotaKelasResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "siswa"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.kelas.siswa.store",
+        "tags": [
+          "AnggotaKelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlotSiswaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "enrolled": {
+                          "type": "integer"
+                        },
+                        "current_total": {
+                          "type": "integer"
+                        },
+                        "kapasitas": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "enrolled",
+                        "current_total",
+                        "kapasitas"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/kelas/{kelas}/siswa/{siswa}": {
+      "delete": {
+        "operationId": "v1.kelas.siswa.destroy",
+        "tags": [
+          "AnggotaKelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "siswa",
+            "in": "path",
+            "required": true,
+            "description": "The siswa ID",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "keterangan",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/kelas/{kelas}/transfer": {
+      "post": {
+        "operationId": "v1.kelas.siswa.transfer",
+        "tags": [
+          "AnggotaKelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferSiswaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "transferred": {
+                          "type": "integer"
+                        },
+                        "source_kelas": {
+                          "type": "string"
+                        },
+                        "target_kelas": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "transferred",
+                        "source_kelas",
+                        "target_kelas"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/bangunan": {
+      "get": {
+        "operationId": "v1.bangunan.index",
+        "tags": [
+          "BangunanApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `BangunanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/BangunanResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "unit"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.bangunan.store",
+        "tags": [
+          "BangunanApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BangunanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`BangunanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BangunanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/bangunan/{bangunan}": {
+      "get": {
+        "operationId": "v1.bangunan.show",
+        "tags": [
+          "BangunanApi"
+        ],
+        "parameters": [
+          {
+            "name": "bangunan",
+            "in": "path",
+            "required": true,
+            "description": "The bangunan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`BangunanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BangunanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.bangunan.update",
+        "tags": [
+          "BangunanApi"
+        ],
+        "parameters": [
+          {
+            "name": "bangunan",
+            "in": "path",
+            "required": true,
+            "description": "The bangunan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BangunanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`BangunanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/BangunanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.bangunan.destroy",
+        "tags": [
+          "BangunanApi"
+        ],
+        "parameters": [
+          {
+            "name": "bangunan",
+            "in": "path",
+            "required": true,
+            "description": "The bangunan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Bangunan deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/data-quality": {
+      "get": {
+        "operationId": "v1.data-quality",
+        "tags": [
+          "DataQualityApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "completeness": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "score": {
+                                  "type": "number"
+                                },
+                                "total_records": {
+                                  "type": "integer"
+                                },
+                                "complete_records": {
+                                  "type": "integer"
+                                },
+                                "siswa_percentage": {
+                                  "type": "number"
+                                },
+                                "karyawan_percentage": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "score",
+                                "total_records",
+                                "complete_records",
+                                "siswa_percentage",
+                                "karyawan_percentage"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "score": {
+                                  "type": "integer",
+                                  "const": 100
+                                },
+                                "details": {
+                                  "type": "string",
+                                  "const": "No data"
+                                }
+                              },
+                              "required": [
+                                "score",
+                                "details"
+                              ]
+                            }
+                          ]
+                        },
+                        "uniqueness": {
+                          "type": "object",
+                          "properties": {
+                            "score": {
+                              "type": "number"
+                            },
+                            "duplicates_found": {
+                              "type": "integer"
+                            },
+                            "duplicate_nisn": {
+                              "type": "integer"
+                            },
+                            "duplicate_nik": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "score",
+                            "duplicates_found",
+                            "duplicate_nisn",
+                            "duplicate_nik"
+                          ]
+                        },
+                        "consistency": {
+                          "type": "object",
+                          "properties": {
+                            "score": {
+                              "type": "number"
+                            },
+                            "orphaned_records": {
+                              "type": "integer"
+                            },
+                            "orphaned_unit_siswa": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "orphaned_ortu_siswa": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "orphaned_unit_karyawan": {
+                              "type": "integer",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "score",
+                            "orphaned_records",
+                            "orphaned_unit_siswa",
+                            "orphaned_ortu_siswa",
+                            "orphaned_unit_karyawan"
+                          ]
+                        },
+                        "validity": {
+                          "type": "object",
+                          "properties": {
+                            "score": {
+                              "type": "number"
+                            },
+                            "valid_records": {
+                              "type": "integer"
+                            },
+                            "invalid_records": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "score",
+                            "valid_records",
+                            "invalid_records"
+                          ]
+                        },
+                        "accuracy": {
+                          "type": "object",
+                          "properties": {
+                            "score": {
+                              "type": "number"
+                            },
+                            "accurate_records": {
+                              "type": "integer"
+                            },
+                            "inaccurate_records": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "score",
+                            "accurate_records",
+                            "inaccurate_records"
+                          ]
+                        },
+                        "summary": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "completeness",
+                        "uniqueness",
+                        "consistency",
+                        "validity",
+                        "accuracy",
+                        "summary"
+                      ]
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "data",
+                    "timestamp"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/v1/karyawan": {
+      "get": {
+        "operationId": "v1.karyawan.index",
+        "tags": [
+          "KaryawanApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `KaryawanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/KaryawanResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "unit"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.karyawan.store",
+        "tags": [
+          "KaryawanApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KaryawanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`KaryawanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KaryawanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/karyawan/{karyawan}": {
+      "get": {
+        "operationId": "v1.karyawan.show",
+        "tags": [
+          "KaryawanApi"
+        ],
+        "parameters": [
+          {
+            "name": "karyawan",
+            "in": "path",
+            "required": true,
+            "description": "The karyawan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`KaryawanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KaryawanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.karyawan.update",
+        "tags": [
+          "KaryawanApi"
+        ],
+        "parameters": [
+          {
+            "name": "karyawan",
+            "in": "path",
+            "required": true,
+            "description": "The karyawan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KaryawanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`KaryawanResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KaryawanResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.karyawan.destroy",
+        "tags": [
+          "KaryawanApi"
+        ],
+        "parameters": [
+          {
+            "name": "karyawan",
+            "in": "path",
+            "required": true,
+            "description": "The karyawan ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Karyawan deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/kelas": {
+      "get": {
+        "operationId": "v1.kelas.index",
+        "tags": [
+          "KelasApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `KelasResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/KelasResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "unit",
+                              "tahun_ajaran",
+                              "wali_kelas"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.kelas.store",
+        "tags": [
+          "KelasApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KelasRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`KelasResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KelasResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "tahun_ajaran",
+                            "wali_kelas"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/kelas/{kelas}": {
+      "get": {
+        "operationId": "v1.kelas.show",
+        "tags": [
+          "KelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`KelasResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KelasResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "tahun_ajaran",
+                            "wali_kelas"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.kelas.update",
+        "tags": [
+          "KelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KelasRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`KelasResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/KelasResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "tahun_ajaran",
+                            "wali_kelas"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.kelas.destroy",
+        "tags": [
+          "KelasApi"
+        ],
+        "parameters": [
+          {
+            "name": "kelas",
+            "in": "path",
+            "required": true,
+            "description": "The kelas ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Kelas deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/mata-pelajaran": {
+      "get": {
+        "operationId": "v1.mata-pelajaran.index",
+        "tags": [
+          "MataPelajaranApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `MataPelajaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/MataPelajaranResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "unit"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.mata-pelajaran.store",
+        "tags": [
+          "MataPelajaranApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MataPelajaranRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`MataPelajaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/MataPelajaranResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/mata-pelajaran/{mataPelajaran}": {
+      "get": {
+        "operationId": "v1.mata-pelajaran.show",
+        "tags": [
+          "MataPelajaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "mataPelajaran",
+            "in": "path",
+            "required": true,
+            "description": "The mata pelajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`MataPelajaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/MataPelajaranResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.mata-pelajaran.update",
+        "tags": [
+          "MataPelajaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "mataPelajaran",
+            "in": "path",
+            "required": true,
+            "description": "The mata pelajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MataPelajaranRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`MataPelajaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/MataPelajaranResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.mata-pelajaran.destroy",
+        "tags": [
+          "MataPelajaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "mataPelajaran",
+            "in": "path",
+            "required": true,
+            "description": "The mata pelajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Mata pelajaran deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/orang-tua": {
+      "get": {
+        "operationId": "v1.orang-tua.index",
+        "tags": [
+          "OrangTuaApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `OrangTuaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OrangTuaResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.orang-tua.store",
+        "tags": [
+          "OrangTuaApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrangTuaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`OrangTuaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/OrangTuaResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/orang-tua/{orangTua}": {
+      "get": {
+        "operationId": "v1.orang-tua.show",
+        "tags": [
+          "OrangTuaApi"
+        ],
+        "parameters": [
+          {
+            "name": "orangTua",
+            "in": "path",
+            "required": true,
+            "description": "The orang tua ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`OrangTuaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/OrangTuaResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.orang-tua.update",
+        "tags": [
+          "OrangTuaApi"
+        ],
+        "parameters": [
+          {
+            "name": "orangTua",
+            "in": "path",
+            "required": true,
+            "description": "The orang tua ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrangTuaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`OrangTuaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/OrangTuaResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.orang-tua.destroy",
+        "tags": [
+          "OrangTuaApi"
+        ],
+        "parameters": [
+          {
+            "name": "orangTua",
+            "in": "path",
+            "required": true,
+            "description": "The orang tua ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Orang tua deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/ruang": {
+      "get": {
+        "operationId": "v1.ruang.index",
+        "tags": [
+          "RuangApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `RuangResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/RuangResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "bangunan"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.ruang.store",
+        "tags": [
+          "RuangApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RuangRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`RuangResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/RuangResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "bangunan"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/ruang/{ruang}": {
+      "get": {
+        "operationId": "v1.ruang.show",
+        "tags": [
+          "RuangApi"
+        ],
+        "parameters": [
+          {
+            "name": "ruang",
+            "in": "path",
+            "required": true,
+            "description": "The ruang ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`RuangResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/RuangResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "bangunan"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.ruang.update",
+        "tags": [
+          "RuangApi"
+        ],
+        "parameters": [
+          {
+            "name": "ruang",
+            "in": "path",
+            "required": true,
+            "description": "The ruang ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RuangRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`RuangResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/RuangResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "bangunan"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.ruang.destroy",
+        "tags": [
+          "RuangApi"
+        ],
+        "parameters": [
+          {
+            "name": "ruang",
+            "in": "path",
+            "required": true,
+            "description": "The ruang ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Ruang deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/siswa": {
+      "get": {
+        "operationId": "v1.siswa.index",
+        "tags": [
+          "SiswaApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `SiswaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/SiswaResource"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "unit",
+                              "orang_tua"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.siswa.store",
+        "tags": [
+          "SiswaApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiswaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`SiswaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/SiswaResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "orang_tua"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/siswa/{siswa}": {
+      "get": {
+        "operationId": "v1.siswa.show",
+        "tags": [
+          "SiswaApi"
+        ],
+        "parameters": [
+          {
+            "name": "siswa",
+            "in": "path",
+            "required": true,
+            "description": "The siswa ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`SiswaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/SiswaResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "orang_tua"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.siswa.update",
+        "tags": [
+          "SiswaApi"
+        ],
+        "parameters": [
+          {
+            "name": "siswa",
+            "in": "path",
+            "required": true,
+            "description": "The siswa ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiswaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`SiswaResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/SiswaResource"
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "unit",
+                            "orang_tua"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.siswa.destroy",
+        "tags": [
+          "SiswaApi"
+        ],
+        "parameters": [
+          {
+            "name": "siswa",
+            "in": "path",
+            "required": true,
+            "description": "The siswa ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Siswa deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/tahun-ajaran": {
+      "get": {
+        "operationId": "v1.tahun-ajaran.index",
+        "tags": [
+          "TahunAjaranApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `TahunAjaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TahunAjaranResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.tahun-ajaran.store",
+        "tags": [
+          "TahunAjaranApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TahunAjaranRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`TahunAjaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TahunAjaranResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/tahun-ajaran/{tahunAjaran}": {
+      "get": {
+        "operationId": "v1.tahun-ajaran.show",
+        "tags": [
+          "TahunAjaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "tahunAjaran",
+            "in": "path",
+            "required": true,
+            "description": "The tahun ajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`TahunAjaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TahunAjaranResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.tahun-ajaran.update",
+        "tags": [
+          "TahunAjaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "tahunAjaran",
+            "in": "path",
+            "required": true,
+            "description": "The tahun ajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TahunAjaranRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`TahunAjaranResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TahunAjaranResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.tahun-ajaran.destroy",
+        "tags": [
+          "TahunAjaranApi"
+        ],
+        "parameters": [
+          {
+            "name": "tahunAjaran",
+            "in": "path",
+            "required": true,
+            "description": "The tahun ajaran ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Tahun ajaran deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/units": {
+      "get": {
+        "operationId": "v1.units.index",
+        "tags": [
+          "UnitApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `UnitResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UnitResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.units.store",
+        "tags": [
+          "UnitApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`UnitResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/units/{unit}": {
+      "get": {
+        "operationId": "v1.units.show",
+        "tags": [
+          "UnitApi"
+        ],
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "description": "The unit ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`UnitResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.units.update",
+        "tags": [
+          "UnitApi"
+        ],
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "description": "The unit ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`UnitResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.units.destroy",
+        "tags": [
+          "UnitApi"
+        ],
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "description": "The unit ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Unit deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/v1/vendor": {
+      "get": {
+        "operationId": "v1.vendor.index",
+        "tags": [
+          "VendorApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `VendorResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/VendorResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1.vendor.store",
+        "tags": [
+          "VendorApi"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`VendorResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/VendorResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/v1/vendor/{vendor}": {
+      "get": {
+        "operationId": "v1.vendor.show",
+        "tags": [
+          "VendorApi"
+        ],
+        "parameters": [
+          {
+            "name": "vendor",
+            "in": "path",
+            "required": true,
+            "description": "The vendor ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`VendorResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/VendorResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1.vendor.update",
+        "tags": [
+          "VendorApi"
+        ],
+        "parameters": [
+          {
+            "name": "vendor",
+            "in": "path",
+            "required": true,
+            "description": "The vendor ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`VendorResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/VendorResource"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1.vendor.destroy",
+        "tags": [
+          "VendorApi"
+        ],
+        "parameters": [
+          {
+            "name": "vendor",
+            "in": "path",
+            "required": true,
+            "description": "The vendor ID",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Vendor deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "http": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "AnggotaKelasResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "siswa_id": {
+            "type": "integer"
+          },
+          "siswa": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SiswaResource"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit",
+                  "orang_tua"
+                ]
+              }
+            ]
+          },
+          "kelas_id": {
+            "type": "integer"
+          },
+          "kelas": {
+            "$ref": "#/components/schemas/KelasResource"
+          },
+          "tahun_ajaran_id": {
+            "type": "integer"
+          },
+          "tahun_ajaran": {
+            "$ref": "#/components/schemas/TahunAjaranResource"
+          },
+          "tanggal_masuk": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "siswa_id",
+          "kelas_id",
+          "tahun_ajaran_id",
+          "tanggal_masuk",
+          "status",
+          "keterangan",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "AnggotaKelasResource"
+      },
+      "BangunanRequest": {
+        "type": "object",
+        "properties": {
+          "kode_bangunan": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "nama_bangunan": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "jumlah_lantai": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "luas": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "kondisi": {
+            "type": "string",
+            "enum": [
+              "baik",
+              "rusak_ringan",
+              "rusak_berat"
+            ]
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "kode_bangunan",
+          "nama_bangunan",
+          "unit_id",
+          "jumlah_lantai",
+          "kondisi"
+        ],
+        "title": "BangunanRequest"
+      },
+      "BangunanResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_bangunan": {
+            "type": "string"
+          },
+          "nama_bangunan": {
+            "type": "string"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResource"
+          },
+          "jumlah_lantai": {
+            "type": "integer"
+          },
+          "luas": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "kondisi": {
+            "type": "string"
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_ruang": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_bangunan",
+          "nama_bangunan",
+          "unit_id",
+          "jumlah_lantai",
+          "luas",
+          "kondisi",
+          "keterangan",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BangunanResource"
+      },
+      "KaryawanRequest": {
+        "type": "object",
+        "properties": {
+          "nip": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 30
+          },
+          "nuptk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik": {
+            "type": "string"
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "jenis_kelamin": {
+            "type": "string",
+            "enum": [
+              "L",
+              "P"
+            ]
+          },
+          "tempat_lahir": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "tanggal_lahir": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "guru",
+              "staf",
+              "kepala_sekolah",
+              "keuangan",
+              "administrasi"
+            ]
+          },
+          "status_kepegawaian": {
+            "type": "string",
+            "enum": [
+              "tetap",
+              "kontrak",
+              "honorer"
+            ]
+          },
+          "telepon": {
+            "type": "string",
+            "pattern": "^(\\+62|62|0)[0-9]{8,15}$"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 100
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "pendidikan_terakhir": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50
+          },
+          "tanggal_masuk": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "is_aktif": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "nik",
+          "nama",
+          "jenis_kelamin",
+          "tanggal_lahir",
+          "unit_id",
+          "role",
+          "status_kepegawaian",
+          "telepon",
+          "email",
+          "tanggal_masuk"
+        ],
+        "title": "KaryawanRequest"
+      },
+      "KaryawanResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nip": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nuptk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik": {
+            "type": "string"
+          },
+          "nama": {
+            "type": "string"
+          },
+          "jenis_kelamin": {
+            "type": "string"
+          },
+          "tempat_lahir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tanggal_lahir": {
+            "type": "string"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResource"
+          },
+          "role": {
+            "type": "string"
+          },
+          "status_kepegawaian": {
+            "type": "string"
+          },
+          "telepon": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pendidikan_terakhir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tanggal_masuk": {
+            "type": "string"
+          },
+          "is_aktif": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "nip",
+          "nuptk",
+          "nik",
+          "nama",
+          "jenis_kelamin",
+          "tempat_lahir",
+          "tanggal_lahir",
+          "unit_id",
+          "role",
+          "status_kepegawaian",
+          "telepon",
+          "email",
+          "alamat",
+          "pendidikan_terakhir",
+          "tanggal_masuk",
+          "is_aktif",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "KaryawanResource"
+      },
+      "KelasRequest": {
+        "type": "object",
+        "properties": {
+          "kode_kelas": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "nama_kelas": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "tingkat": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "tahun_ajaran_id": {
+            "type": "integer"
+          },
+          "wali_kelas_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "kapasitas": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60
+          }
+        },
+        "required": [
+          "kode_kelas",
+          "nama_kelas",
+          "tingkat",
+          "unit_id",
+          "tahun_ajaran_id",
+          "kapasitas"
+        ],
+        "title": "KelasRequest"
+      },
+      "KelasResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_kelas": {
+            "type": "string"
+          },
+          "nama_kelas": {
+            "type": "string"
+          },
+          "tingkat": {
+            "type": "integer"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResource"
+          },
+          "tahun_ajaran_id": {
+            "type": "integer"
+          },
+          "tahun_ajaran": {
+            "$ref": "#/components/schemas/TahunAjaranResource"
+          },
+          "wali_kelas_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "wali_kelas": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KaryawanResource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kapasitas": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_kelas",
+          "nama_kelas",
+          "tingkat",
+          "unit_id",
+          "tahun_ajaran_id",
+          "wali_kelas_id",
+          "kapasitas",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "KelasResource"
+      },
+      "MataPelajaranRequest": {
+        "type": "object",
+        "properties": {
+          "kode_mapel": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "nama_mapel": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "kelompok": {
+            "type": "string",
+            "enum": [
+              "wajib",
+              "peminatan",
+              "muatan_lokal",
+              "ekstrakurikuler"
+            ]
+          },
+          "beban_jam": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "kode_mapel",
+          "nama_mapel",
+          "unit_id",
+          "kelompok",
+          "beban_jam"
+        ],
+        "title": "MataPelajaranRequest"
+      },
+      "MataPelajaranResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_mapel": {
+            "type": "string"
+          },
+          "nama_mapel": {
+            "type": "string"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResource"
+          },
+          "kelompok": {
+            "type": "string"
+          },
+          "beban_jam": {
+            "type": "integer"
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_mapel",
+          "nama_mapel",
+          "unit_id",
+          "kelompok",
+          "beban_jam",
+          "keterangan",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "MataPelajaranResource"
+      },
+      "OrangTuaRequest": {
+        "type": "object",
+        "properties": {
+          "no_kk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik_ayah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_ayah": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "pekerjaan_ayah": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "penghasilan_ayah": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50
+          },
+          "nik_ibu": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_ibu": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "pekerjaan_ibu": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "penghasilan_ibu": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50
+          },
+          "nama_wali": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "nik_wali": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hubungan_wali": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50
+          },
+          "telepon": {
+            "type": "string",
+            "pattern": "^(\\+62|62|0)[0-9]{8,15}$"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "maxLength": 100
+          },
+          "alamat": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "telepon",
+          "alamat"
+        ],
+        "title": "OrangTuaRequest"
+      },
+      "OrangTuaResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "no_kk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik_ayah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_ayah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pekerjaan_ayah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "penghasilan_ayah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik_ibu": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_ibu": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pekerjaan_ibu": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "penghasilan_ibu": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_wali": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik_wali": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hubungan_wali": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "telepon": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "alamat": {
+            "type": "string"
+          },
+          "total_siswa": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "no_kk",
+          "nik_ayah",
+          "nama_ayah",
+          "pekerjaan_ayah",
+          "penghasilan_ayah",
+          "nik_ibu",
+          "nama_ibu",
+          "pekerjaan_ibu",
+          "penghasilan_ibu",
+          "nama_wali",
+          "nik_wali",
+          "hubungan_wali",
+          "telepon",
+          "email",
+          "alamat",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OrangTuaResource"
+      },
+      "PlotSiswaRequest": {
+        "type": "object",
+        "properties": {
+          "siswa_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1
+          },
+          "tanggal_masuk": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "siswa_ids"
+        ],
+        "title": "PlotSiswaRequest"
+      },
+      "RuangRequest": {
+        "type": "object",
+        "properties": {
+          "kode_ruang": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "nama_ruang": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "bangunan_id": {
+            "type": "integer"
+          },
+          "lantai": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "fungsi": {
+            "type": "string",
+            "enum": [
+              "kelas",
+              "laboratorium",
+              "perpustakaan",
+              "kantor",
+              "aula",
+              "ibadah",
+              "lainnya"
+            ]
+          },
+          "kapasitas": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "kondisi": {
+            "type": "string",
+            "enum": [
+              "baik",
+              "rusak_ringan",
+              "rusak_berat"
+            ]
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "kode_ruang",
+          "nama_ruang",
+          "bangunan_id",
+          "lantai",
+          "fungsi",
+          "kapasitas",
+          "kondisi"
+        ],
+        "title": "RuangRequest"
+      },
+      "RuangResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_ruang": {
+            "type": "string"
+          },
+          "nama_ruang": {
+            "type": "string"
+          },
+          "bangunan_id": {
+            "type": "integer"
+          },
+          "bangunan": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BangunanResource"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "unit"
+                ]
+              }
+            ]
+          },
+          "lantai": {
+            "type": "integer"
+          },
+          "fungsi": {
+            "type": "string"
+          },
+          "kapasitas": {
+            "type": "integer"
+          },
+          "kondisi": {
+            "type": "string"
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_ruang",
+          "nama_ruang",
+          "bangunan_id",
+          "lantai",
+          "fungsi",
+          "kapasitas",
+          "kondisi",
+          "keterangan",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RuangResource"
+      },
+      "SiswaRequest": {
+        "type": "object",
+        "properties": {
+          "nisn": {
+            "type": "string"
+          },
+          "nis": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 20
+          },
+          "nik": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_lengkap": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "nama_panggilan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50
+          },
+          "jenis_kelamin": {
+            "type": "string",
+            "enum": [
+              "L",
+              "P"
+            ]
+          },
+          "tempat_lahir": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "tanggal_lahir": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "agama": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 30
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "orang_tua_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "alamat": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "angkatan": {
+            "type": "integer",
+            "minimum": 2010,
+            "maximum": 2035
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "aktif",
+              "lulus",
+              "mutasi",
+              "keluar"
+            ]
+          }
+        },
+        "required": [
+          "nisn",
+          "nama_lengkap",
+          "jenis_kelamin",
+          "tempat_lahir",
+          "tanggal_lahir",
+          "unit_id",
+          "alamat",
+          "angkatan",
+          "status"
+        ],
+        "title": "SiswaRequest"
+      },
+      "SiswaResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nisn": {
+            "type": "string"
+          },
+          "nis": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nik": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nama_lengkap": {
+            "type": "string"
+          },
+          "nama_panggilan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "jenis_kelamin": {
+            "type": "string"
+          },
+          "tempat_lahir": {
+            "type": "string"
+          },
+          "tanggal_lahir": {
+            "type": "string"
+          },
+          "agama": {
+            "type": "string"
+          },
+          "unit_id": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResource"
+          },
+          "orang_tua_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "orang_tua": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrangTuaResource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "alamat": {
+            "type": "string"
+          },
+          "angkatan": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "nisn",
+          "nis",
+          "nik",
+          "nama_lengkap",
+          "nama_panggilan",
+          "jenis_kelamin",
+          "tempat_lahir",
+          "tanggal_lahir",
+          "agama",
+          "unit_id",
+          "orang_tua_id",
+          "alamat",
+          "angkatan",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SiswaResource"
+      },
+      "TahunAjaranRequest": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 25
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "semester": {
+            "type": "string",
+            "enum": [
+              "ganjil",
+              "genap"
+            ]
+          },
+          "tanggal_mulai": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tanggal_selesai": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "is_aktif": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kode",
+          "nama",
+          "semester",
+          "tanggal_mulai",
+          "tanggal_selesai"
+        ],
+        "title": "TahunAjaranRequest"
+      },
+      "TahunAjaranResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode": {
+            "type": "string"
+          },
+          "nama": {
+            "type": "string"
+          },
+          "semester": {
+            "type": "string"
+          },
+          "tanggal_mulai": {
+            "type": "string"
+          },
+          "tanggal_selesai": {
+            "type": "string"
+          },
+          "is_aktif": {
+            "type": "boolean"
+          },
+          "total_kelas": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode",
+          "nama",
+          "semester",
+          "tanggal_mulai",
+          "tanggal_selesai",
+          "is_aktif",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "TahunAjaranResource"
+      },
+      "TransferSiswaRequest": {
+        "type": "object",
+        "properties": {
+          "target_kelas_id": {
+            "type": "integer"
+          },
+          "siswa_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1
+          },
+          "keterangan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "target_kelas_id",
+          "siswa_ids"
+        ],
+        "title": "TransferSiswaRequest"
+      },
+      "UnitRequest": {
+        "type": "object",
+        "properties": {
+          "kode_unit": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "nama_unit": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "jenjang": {
+            "type": "string",
+            "enum": [
+              "PG",
+              "TK",
+              "SD",
+              "SMP",
+              "SMA",
+              "BOARDING"
+            ]
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "telepon": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 25
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "maxLength": 100
+          },
+          "kepala_sekolah": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "is_aktif": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kode_unit",
+          "nama_unit",
+          "jenjang"
+        ],
+        "title": "UnitRequest"
+      },
+      "UnitResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_unit": {
+            "type": "string"
+          },
+          "nama_unit": {
+            "type": "string"
+          },
+          "jenjang": {
+            "type": "string"
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "telepon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kepala_sekolah": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "is_aktif": {
+            "type": "boolean"
+          },
+          "total_siswa": {
+            "type": "integer"
+          },
+          "total_karyawan": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_unit",
+          "nama_unit",
+          "jenjang",
+          "alamat",
+          "telepon",
+          "email",
+          "kepala_sekolah",
+          "is_aktif",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "UnitResource"
+      },
+      "VendorRequest": {
+        "type": "object",
+        "properties": {
+          "kode_vendor": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "nama_vendor": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "kategori": {
+            "type": "string",
+            "enum": [
+              "sarana_prasarana",
+              "buku_pelajaran",
+              "katering",
+              "seragam",
+              "teknologi",
+              "kebersihan",
+              "lainnya"
+            ]
+          },
+          "nama_kontak": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "telepon": {
+            "type": "string",
+            "pattern": "^(\\+62|62|0)[0-9]{8,15}$"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "maxLength": 100
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "aktif",
+              "non_aktif"
+            ]
+          }
+        },
+        "required": [
+          "kode_vendor",
+          "nama_vendor",
+          "kategori",
+          "telepon",
+          "status"
+        ],
+        "title": "VendorRequest"
+      },
+      "VendorResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kode_vendor": {
+            "type": "string"
+          },
+          "nama_vendor": {
+            "type": "string"
+          },
+          "kategori": {
+            "type": "string"
+          },
+          "nama_kontak": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "telepon": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "alamat": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kode_vendor",
+          "nama_vendor",
+          "kategori",
+          "nama_kontak",
+          "telepon",
+          "email",
+          "alamat",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "VendorResource"
+      }
+    },
+    "responses": {
+      "AuthenticationException": {
+        "description": "Unauthenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "ValidationException": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Errors overview."
+                },
+                "errors": {
+                  "type": "object",
+                  "description": "A detailed description of each field that failed validation.",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "message",
+                "errors"
+              ]
+            }
+          }
+        }
+      },
+      "ModelNotFoundException": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "AuthorizationException": {
+        "description": "Authorization error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

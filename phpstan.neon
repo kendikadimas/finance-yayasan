@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - bootstrap/app.php
+        - config/
+        - database/
+        - routes/
+
+    level: 7
+
+    # Model casts di app ini pakai method casts(): array (gaya Laravel 11+),
+    # bukan properti $casts — Larastan perlu diberi tahu untuk mem-parsingnya,
+    # kalau tidak semua cast custom (mis. 'date:Y-m-d') jatuh balik ke tipe
+    # kolom DB mentah (string) alih-alih Carbon.
+    parseModelCastsMethod: true
